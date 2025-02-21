@@ -1,7 +1,7 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import cors from "cors"; 
+// import cors from "cors"; 
 import path from "node:path";
 
 import { typeDefs, resolvers } from "./Schemas/index.js";
@@ -11,10 +11,10 @@ import { contextMiddleware } from "./services/auth.js";
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(cors({
+/*app.use(cors({
   origin: "http://localhost:3000", 
   credentials: true,
-}));
+})); */
 
 app.use((req, _res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -47,12 +47,13 @@ const startApolloServer = async () => {
         },
       })
     );
-
+    console.log(process.env.NODE_ENV);
     if (process.env.NODE_ENV === "production") {
-      app.use(express.static(path.join(__dirname, "../client/dist")));
-
+      console.log("📂 Serving client in production mode");
+      app.use(express.static(path.join(__dirname, "../../client/dist")));
+      console.log(path.join(__dirname, "../../client/dist"));
       app.get("*", (_req, res) => {
-        res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+        res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
       });
     }
 
